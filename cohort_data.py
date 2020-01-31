@@ -57,15 +57,15 @@ def sort_by_cohort(filename):
         first_name = token[0]
         last_name = token[1]
         if cohort == "G":
-            ghosts.append(first_name + " " + last_name)
+            ghosts.append(f"{first_name} {last_name}")
         elif cohort == "Winter 2016":
-            winter_16.append(first_name + " " + last_name)
+            winter_16.append(f"{first_name} {last_name}")
         elif cohort == "Spring 2016":
-            spring_16.append(first_name + " " + last_name)
+            spring_16.append(f"{first_name} {last_name}")
         elif cohort == "Summer 2016":
-            summer_16.append(first_name + " " + last_name)
+            summer_16.append(f"{first_name} {last_name}")
         elif cohort == "Fall 2015":
-            fall_15.append(first_name + " " + last_name)
+            fall_15.append(f"{first_name} {last_name}")
 
     all_students = [fall_15, winter_16, spring_16, summer_16, ghosts]
 
@@ -152,7 +152,7 @@ def all_students_tuple_list(filename):
         token = line.split("|")
         first_name, last_name, house, advisor, cohort = token
         if cohort != "I" and cohort != "G":
-            student_tuple = (first_name + " " + last_name, house, advisor, cohort)
+            student_tuple = (f"{first_name} {last_name}", house, advisor, cohort)
             student_list.append(student_tuple)
 
     return student_list
@@ -204,7 +204,27 @@ def find_name_duplicates(filename):
     """
 
     duplicate_names = set()
+    file = open(filename)
+    winter_16 = set()
+    spring_16 = set()
+    summer_16 = set()
+    fall_15 = set()
 
+    for line in file:
+        line = line.strip()
+        tokens = line.split("|")
+        last_name = tokens[1]
+        cohort = tokens[4]
+        if cohort == "Winter 2016":
+            winter_16.add(last_name)
+        elif cohort == "Spring 2016":
+            spring_16.add(last_name)
+        elif cohort == "Summer 2016":
+            summer_16.add(last_name)
+        elif cohort == "Fall 2015":
+            fall_15.add(last_name)
+
+    duplicate_names = winter_16 & spring_16 & summer_16 & fall_15
     # Code goes here
 
     return duplicate_names
@@ -237,16 +257,38 @@ def find_house_members_by_student_name(student_list):
      """
 
     # Code goes here
+    full_name = input("Choose a student: ")
+    same_house_cohort = set()
+    cohort = None
+    house = None
+    for student in student_list:
+        student_name = student[0]
+        if student_name == full_name:
+            cohort = student[3]
+            house = student[1]
 
-    return
+    for other_student in student_list:
+        other_student_name = other_student[0]
+        other_student_cohort = other_student[3]
+        other_student_house = other_student[1]
+        if other_student_cohort == cohort and other_student_house == house and other_student_name != full_name:
+            same_house_cohort.add(other_student_name)
+
+    print(f"{full_name} was in house {house} in the {cohort} cohort")
+    print(f"The following students are also in their house: ")
+    for house_cohort_student in same_house_cohort:
+        print(f"{house_cohort_student}")
+
+    return None
 
 
 #############################################################################
 # Here is some useful code to run these functions without doctests!
 all_students_data = all_students_tuple_list("cohort_data.txt")
-test = find_cohort_by_student_name(all_students_data)
-print(test)
-# find_house_members_by_student_name(all_students_data)
+#result = find_cohort_by_student_name(all_students_data)
+#print(result)
+result = find_house_members_by_student_name(all_students_data)
+print(result)
 
 
 ##############################################################################
