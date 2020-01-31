@@ -13,8 +13,15 @@ def unique_houses(filename):
     ["Dumbledore's Army", 'Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin']
 
     """
-
+    file = open(filename)
     houses = set()
+    for line in file:
+        token = line.split("|")
+        house = token[2]
+        if house != "":
+            houses.add(house)
+
+    file.close()
 
     # Code goes here
 
@@ -41,6 +48,26 @@ def sort_by_cohort(filename):
     summer_16 = []
     fall_15 = []
     ghosts = []
+
+    file = open(filename)
+    for line in file:
+        line = line.strip()
+        token = line.split("|")
+        cohort = token[4]
+        first_name = token[0]
+        last_name = token[1]
+        if cohort == "G":
+            ghosts.append(first_name + " " + last_name)
+        elif cohort == "Winter 2016":
+            winter_16.append(first_name + " " + last_name)
+        elif cohort == "Spring 2016":
+            spring_16.append(first_name + " " + last_name)
+        elif cohort == "Summer 2016":
+            summer_16.append(first_name + " " + last_name)
+        elif cohort == "Fall 2015":
+            fall_15.append(first_name + " " + last_name)
+
+    all_students = [fall_15, winter_16, spring_16, summer_16, ghosts]
 
     # Code goes here
 
@@ -70,6 +97,34 @@ def hogwarts_by_house(filename):
     ghosts = []
     instructors = []
 
+    file = open(filename)
+    for line in file:
+        line = line.strip()
+        token = line.split("|")
+        cohort = token[4]
+        house = token[2]
+        last_name = token[1]
+        if cohort == "G":
+            ghosts.append(last_name)
+        elif cohort == "I":
+            instructors.append(last_name)
+        elif house == "Gryffindor":
+            gryffindor.append(last_name)
+        elif house == "Hufflepuff":
+            hufflepuff.append(last_name)
+        elif house == "Ravenclaw":
+            ravenclaw.append(last_name)
+        elif house == "Slytherin":
+            slytherin.append(last_name)
+        elif house == "Dumbledore's Army":
+            dumbledores_army.append(last_name)
+
+
+    all_hogwarts = [dumbledores_army, gryffindor, hufflepuff, ravenclaw, slytherin, ghosts, instructors]
+
+    for hogwarts_list in all_hogwarts:
+        hogwarts_list.sort()
+
     # Code goes here
 
     return all_hogwarts
@@ -91,6 +146,14 @@ def all_students_tuple_list(filename):
     student_list = []
 
     # Code goes here
+    file = open(filename)
+    for line in file:
+        line = line.strip()
+        token = line.split("|")
+        first_name, last_name, house, advisor, cohort = token
+        if cohort != "I" and cohort != "G":
+            student_tuple = (first_name + " " + last_name, house, advisor, cohort)
+            student_list.append(student_tuple)
 
     return student_list
 
@@ -116,6 +179,10 @@ def find_cohort_by_student_name(student_list):
     """
 
     # Code goes here
+    full_name = input("Who are you looking for? ")
+    for student in student_list:
+        if full_name == student[0]:
+            return f"{student[0]} was in the {student[3]} cohort"
 
     return "Student not found."
 
@@ -176,8 +243,9 @@ def find_house_members_by_student_name(student_list):
 
 #############################################################################
 # Here is some useful code to run these functions without doctests!
-
-# find_cohort_by_student_name(all_students_data)
+all_students_data = all_students_tuple_list("cohort_data.txt")
+test = find_cohort_by_student_name(all_students_data)
+print(test)
 # find_house_members_by_student_name(all_students_data)
 
 
