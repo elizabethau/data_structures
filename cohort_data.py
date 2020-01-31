@@ -286,12 +286,22 @@ def find_members_by_name_2(student_list):
     student_name = input("Choose a student: ")
     cohort = set()
     house = set()
+    student_house = None
+    student_cohort = None
     for student in student_list:
         if student_name == student[0]:
             student_cohort = student[3]
             student_house = student[1]
+    for other_student in student_list:
+        if other_student[1] == student_house:
+            house.add(other_student[0])
+        if other_student[3] == student_cohort:
+            cohort.add(other_student[0])
 
-        cohort.add()
+    final_set = cohort & house
+    for full_name in final_set:
+        print(f"{full_name}")
+
 
 
 #############################################################################
@@ -299,7 +309,7 @@ def find_members_by_name_2(student_list):
 all_students_data = all_students_tuple_list("cohort_data.txt")
 #result = find_cohort_by_student_name(all_students_data)
 #print(result)
-result = find_house_members_by_student_name(all_students_data)
+result = find_members_by_name_2(all_students_data)
 print(result)
 
 
